@@ -16,9 +16,10 @@ mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
 app.use(cors); //cors needs to be above any routes calls in order to provide access to APIs
-// app.use(mountainsRouter);
+app.use(mountainsRouter);
 app.use(morgan('dev'));
-app.all('*', function(err, req, res) {
+
+app.all('*', function(err, req, res, next) {
   debug('ALL: *');
   err = new Error('not found');
   err.status = 404;
@@ -26,4 +27,4 @@ app.all('*', function(err, req, res) {
   next();
 });
 
-app.listen(PORT, () => { debug(`server up ${PORT}`) });
+app.listen(PORT, () => { debug(`server up ${PORT}`); });

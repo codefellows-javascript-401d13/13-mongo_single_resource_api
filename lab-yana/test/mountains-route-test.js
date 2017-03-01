@@ -2,14 +2,18 @@
 
 const expect = require('chai').expect;
 const request = require('superagent');
-const MountainsRouter = require('../route/mountains-route.js');
+const Mountains = require('../model/mountains.js');
 const url = 'http://localhost:3004';
 
+require ('../server.js');
 
 const testMountain = {
-  timestamp: new Date(),
-  name: 'test name'
-}
+  name: 'test mountain name'
+};
+
+const newInfo = {
+  name: 'new info'
+};
 
 describe('Mountains Routes', function() {
   describe('unregistered routes', function() {
@@ -17,16 +21,31 @@ describe('Mountains Routes', function() {
       request.get(`${url}/someWrongRoute`)
       .end((err, res) => {
         expect(res.status).to.equal(404);
+        expect(res.body).to.be.empty();
+        done();
       });
     });
   });
   describe('GET: /api/mountains/:id', function() {
-    // before(done => {
-    //   //add stuff
-    // });
-    // after(done => {
-    //   //remove stuff;
-    // });
+    before(done => {
+      testMountain.timestamp = new Date();
+      new Mountains(testMountain).save()
+      .then(mountains => {
+        this.tempMountains = mountains;
+        done();
+      })
+      .catch(done);
+    });
+    after(done => {
+      delete testMountain.timestamp;
+      if (this.tempMountains) {
+        Mountains.remove({})
+        .then( () => done())
+        .catch(done);
+        return;
+      }
+      done();
+    });
     describe('with a valid body', () => {
       it('should return a mountain', done => {
         request.get(`${url}/api/mountains/${this.tempMountains._id}`)
@@ -50,20 +69,33 @@ describe('Mountains Routes', function() {
     });
   });
   describe('PUT: /api/mountains/:id', function() {
-    // before(done => {
-    //   //add entries to edit
-    // });
-    // after(done => {
-    //   //remove entries when done
-    // });
+    before(done => {
+      testMountain.timestamp = new Date();
+      new Mountains(testMountain).save()
+      .then(mountain => {
+        this.tempMountains = mountain;
+        done();
+      })
+      .catch(done);
+    });
+    after(done => {
+      delete testMountain.timestamp;
+      if (this.tempMountains) {
+        Mountains.remove({})
+        .then( () => done())
+        .catch(done);
+        return;
+      }
+      done();
+    });
     describe('with a valid id and body', () => {
       it('should return a mountain', done => {
         request.put(`${url}/api/mountains/${this.tempMountains._id}`)
-        .send({testMountain})
+        .send({newInfo})
         .end((err, res) => {
           if (err) return done();
           expect(res.status).to.equal(200);
-          expect(res.body.name).to.equal(testMountain);
+          expect(res.body.name).to.equal(newInfo.name);
           done();
         });
       });
@@ -71,7 +103,7 @@ describe('Mountains Routes', function() {
     describe('with an invalid id', () => {
       it('should return a 404 not found', done => {
         request.put(`${url}/api/mountains/invalidID`)
-        .send({testMountain})
+        .send({newInfo})
         .end((err, res) => {
           expect(err.status).to.equal(404);
           expect(res.body).to.be.empty;
@@ -84,15 +116,25 @@ describe('Mountains Routes', function() {
         request.put(`${url}/api/mountains/${this.tempMountains._id}`)
         .end((err, res) => {
           expect(err.status).to.equal(400);
-          epxect(res.body).to.be.empty;
+          expect(res.body).to.be.empty;
           done();
         });
       });
     });
   });
   describe('POST: /api/mountains', function() {
+    after(done => {
+      delete testMountain.timestamp;
+      if(this.tempMountains) {
+        Mountains.remove({})
+        .then( () => done())
+        .catch(done);
+        return;
+      }
+      done();
+    });
     describe('with no request body', function() {
-      it('should return a 400 bad request', function() {
+      it('should return a 400 bad request', function(done) {
         request.post(`${url}/api/mountains`)
         .end((err, res) => {
           expect(err.status).to.equal(400);
