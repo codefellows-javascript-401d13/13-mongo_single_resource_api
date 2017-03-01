@@ -14,6 +14,10 @@ const examplePet = {
   name: 'test pet name'
 };
 
+const newExamplePet = {
+  name: 'new pet name'
+};
+
 describe('Pet Routes', function() {
   describe('POST: /api/pet', function () {
     describe('with a valid body', function() {
@@ -41,7 +45,7 @@ describe('Pet Routes', function() {
     });
   });
 
-  describe('GET: /api/list/:id', function() {
+  describe('GET: /api/pet/:id', function() {
     describe('with a valid body', function() {
       before( done => {
         examplePet.timestamp = new Date();
@@ -66,10 +70,47 @@ describe('Pet Routes', function() {
 
       it('should return a pet', done => {
         request.get(`${url}/api/pet/${this.tempPet._id}`)
-        .end((err, res) =. {
+        .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal('test pet name');
+          done();
+        });
+      });
+    });
+  });
+
+  describe('PUT: /api/pet/:id', function() {
+    describe('with a valid body', function() {
+      before( done => {
+        examplePet.timestamp = new Date;
+        new Pet(examplePet).save()
+        .then( pet => {
+          this.tempPet = pet;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        delete examplePet.timestamp;
+        if(this.tempPet){
+          Pet.remove({})
+          .then( () => done() )
+          .catch(done);
+          return;
+        };
+        done();
+      });
+
+      it('should return a pet', done => {
+        newExamplePet.timestamp = new Date;
+        new Pet(newExamplePet).save();
+        request.put(`${url}/api/pet/${this.tempPet._id}`)
+        .send(newExamplePet)
+        .end((err, res) => {
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal('new pet name');
           done();
         });
       });

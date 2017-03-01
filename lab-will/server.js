@@ -11,7 +11,7 @@ const petRouter = require('./route/pet-route.js');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/listdev';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/petdev';
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
