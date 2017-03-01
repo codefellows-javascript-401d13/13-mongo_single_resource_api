@@ -7,9 +7,14 @@ const Card = require('../model/card.js');
 const PORT = process.env.PORT || 3000;
 const url = `http://localhost:${PORT}`;
 
+// process.env.MONGODB_URI = 'mongodb://localhost/cardapp';
+
+require('../server.js');
+
+
 const sampleCard = {
   brand: 'Topps',
-  set: true,
+  completeSet: true,
   single: false
 };
 
@@ -32,10 +37,10 @@ describe('Card Routes', function() {
         .end((err, res) => {
           if (err) return done(err);
           this.tempCard = res.body;
-          expect(res.status).to.be(200);
+          expect(res.status).to.equal(200);
           expect(res.body.brand).to.equal('Topps');
-          expect(res.body).to.have.key('set');
-          expect(res.body.set).to.be.ok();
+          expect(res.body.completeSet).to.be.true;
+          expect(res.body.single).to.not.be.true;
           done();
         });
       });
