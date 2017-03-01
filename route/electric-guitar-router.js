@@ -7,8 +7,8 @@ const ElecGuitar = require('../model/electric-guitar.js');
 
 const elecGuitarRouter = module.exports = new Router();
 
-elecGuitarRouter.post('/api/guitar', jsonParser, function(req, res, next) {
-  debug('POST: /api/guitar');
+elecGuitarRouter.post('/api/electric-guitar', jsonParser, function(req, res, next) {
+  debug('POST: /api/electric-guitar');
 
   req.body.timestamp = new Date();
   new ElecGuitar(req.body).save()
@@ -16,24 +16,24 @@ elecGuitarRouter.post('/api/guitar', jsonParser, function(req, res, next) {
   .catch(next);
 });
 
-elecGuitarRouter.get('/api/guitar/:id', function(req, res, next) {
-  debug('GET: /api/guitar/:id');
+elecGuitarRouter.get('/api/electric-guitar/:id', function(req, res, next) {
+  debug('GET: /api/electric-guitar/:id');
 
   ElecGuitar.findById(req.params.id)
   .then( elecGuitar => res.json(elecGuitar))
   .catch(next);
 });
 
-elecGuitarRouter.put('/api/guitar/:id', jsonParser, function(req, res, next) {
-  debug('PUT: /api/guitar/:id');
+elecGuitarRouter.put('/api/electric-guitar/:id', jsonParser, function(req, res, next) {
+  debug('PUT: /api/electric-guitar/:id');
 
   ElecGuitar.findByIdAndUpdate(req.params.id, req.body)
   .then( elecGuitar => res.json(elecGuitar))
   .catch(next);
 });
 
-elecGuitarRouter.delete('/api/guitar/:id', function(req, res, next) {
-  debug('DELETE: /api/guitar/:id');
+elecGuitarRouter.delete('/api/electric-guitar/:id', function(req, res, next) {
+  debug('DELETE: /api/electric-guitar/:id');
 
   ElecGuitar.findByIdAndRemove(req.params.id)
   .then( () => res.status(204).send('no content'))
