@@ -63,4 +63,39 @@ describe('Shoe Routes', function() {
       });
     });
   });
+
+  describe('GET: /api/shoe/:id', function() {
+    describe('with a valid id', function() {
+      before( done => {
+        shoeExample.timestamp = new Date();
+        new Shoe(shoeExample).save()
+        .then( shoe => {
+          this.tempShoe = shoe;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        if (this.tempShoe) {
+          Shoe.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('should return a shoe', done => {
+        request.get(`${url}/api/shoe/${this.tempShoe._id}`)
+        .end((err, res) => {
+          if (err) done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.model).to.equal(this.tempShoe.model);
+          expect(res.body.brand).to.equal(this.tempShoe.brand);
+          done();
+        });
+      });
+    });
+  });
 });

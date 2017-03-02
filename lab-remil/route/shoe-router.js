@@ -18,3 +18,13 @@ shoeRouter.post('/api/shoe', jsonParser, function(req, res, next) {
   .then( shoe => res.json(shoe))
   .catch(next);
 });
+
+shoeRouter.get('/api/shoe/:id', function(req, res, next) {
+  debug('GET: /api/shoe');
+
+  if (!req.params.id) return next(createError(400, 'expected id'));
+
+  Shoe.findById(req.params.id)
+  .then( shoe => res.json(shoe))
+  .catch(next);  
+});
