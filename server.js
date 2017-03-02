@@ -13,7 +13,7 @@ const error = require('./lib/error-middleware.js');
 const app = express();
 
 const PORT = process.env.PORT || 8000;
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/carappdev'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/carappdev';
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);

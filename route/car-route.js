@@ -22,7 +22,7 @@ carRouter.get('/api/car/:id', function(req, res, next) {
 });
 
 carRouter.get('/api/car', function(req, res, next){
-   debug('GET: /api/car');
+  debug('GET: /api/car');
   Car.findById()
   .then( car => res.json(car))
   .catch( err => next(err));
@@ -48,4 +48,3 @@ carRouter.delete('/api/car/:id', function(req, res, next){
   .then(() => res.status(204).send())
   .catch( err => next(err));
 });
-
