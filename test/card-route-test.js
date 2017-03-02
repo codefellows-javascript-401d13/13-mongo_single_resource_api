@@ -104,4 +104,44 @@ describe('Card Routes', function() {
       });
     });
   });
+
+  describe('PUT: api/card', function() {
+    describe('with a valid req body', function() {
+      before( done => {
+        new Card(sampleCard).save()
+        .then( card => {
+          this.testCard = card;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        if (this.testCard) {
+          Card.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('it should return an updated card', done =>{
+        let updateCard = {
+          brand: 'Upper Deck',
+          completeSet: false,
+          single: true
+        };
+        request.put(`${url}/api/card/${this.testCard._id}`)
+        .send(updateCard)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.brand).to.equal(updateCard.brand);
+          expect(res.body.completeSet).to.not.be.true;
+          expect(res.body.single).to.be.true;
+        });
+      });
+    });
+  });
 });

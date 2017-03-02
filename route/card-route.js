@@ -15,8 +15,7 @@ cardRouter.post('/api/card', jsonParser, function(req, res, next) {
     debug('POST without body');
 
     let err = createError(400);
-    res.status(err.status).send(err.name);
-    return next();
+    return next(err);
   }
 
   new Card(req.body).save()
@@ -26,13 +25,12 @@ cardRouter.post('/api/card', jsonParser, function(req, res, next) {
 
 cardRouter.get('/api/card/:id', function(req, res, next) {
   debug('GET: api/card');
-  console.log(req.params.id);
+
   Card.findById(req.params.id)
   .then( card => {
     if (!card) {
       let err = createError(404);
-      res.status(err.status).send(err.name);
-      return next();
+      return next(err);
     }
     res.json(card);
   })
