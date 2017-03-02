@@ -29,10 +29,22 @@ cardRouter.get('/api/card/:id', function(req, res, next) {
   Card.findById(req.params.id)
   .then( card => {
     if (!card) {
-      let err = createError(404);
-      return next(err);
+      return next(createError(404));
     }
     res.json(card);
+  })
+  .catch(next);
+});
+
+cardRouter.put('/api/card/:_id', jsonParser, function(req, res, next) {
+  debug('POST: api/card/:brand.:completeSet.:single');
+
+  Card.findByIdAndUpdate(req.params._id, req.body, { new: true })
+  .then( update => {
+    if (!update) {
+      return next(createError(404));
+    }
+    res.json(update);
   })
   .catch(next);
 });

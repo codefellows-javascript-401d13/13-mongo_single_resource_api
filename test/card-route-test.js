@@ -137,9 +137,29 @@ describe('Card Routes', function() {
         .end((err, res) => {
           if (err) return done(err);
           expect(res.status).to.equal(200);
+          expect(res.body._id).to.equal(this.testCard._id.toString());
           expect(res.body.brand).to.equal(updateCard.brand);
           expect(res.body.completeSet).to.not.be.true;
           expect(res.body.single).to.be.true;
+          done();
+        });
+      });
+    });
+    describe('with a body but undefined id', function() {
+      it('should return a 404 error', function(done) {
+        let fakeCard = {
+          _id: '000000000000000000000000',
+          football: 'sucks',
+          soccer: 'rules',
+          pingpong: 'too'
+        };
+        request.put(`${url}/api/card/${fakeCard._id}`)
+        .send(fakeCard)
+        .end((err, res) => {
+          expect(err.status).to.equal(404);
+          expect(res.status).to.equal(err.status);
+          expect(err.message).to.equal('Not Found');
+          done();
         });
       });
     });
