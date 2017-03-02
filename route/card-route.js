@@ -20,10 +20,10 @@ cardRouter.post('/api/card', jsonParser, function(req, res, next) {
   .catch(next);
 });
 
-cardRouter.get('/api/card/:id', function(req, res, next) {
-  debug('GET: api/card');
+cardRouter.get('/api/card/:_id', function(req, res, next) {
+  debug('GET: api/card/:_id');
 
-  Card.findById(req.params.id)
+  Card.findById(req.params._id)
   .then( card => {
     if (!card) {
       return next(createError(404));
@@ -63,6 +63,16 @@ cardRouter.delete('/api/card/:_id', function(req, res, next) {
       return next(createError(404));
     }
     res.json(discarded);
+  })
+  .catch(next);
+});
+
+cardRouter.get('/api/card', function(req, res, next) {
+  debug('GET: api/card');
+
+  Card.find({})
+  .then( cards => {
+    console.log('cards', cards);
   })
   .catch(next);
 });

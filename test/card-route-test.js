@@ -3,7 +3,6 @@
 const request = require('superagent');
 const expect = require('chai').expect;
 const Card = require('../model/card.js');
-// const mongoose = require('mongoose');
 
 const PORT = process.env.PORT || 3000;
 const url = `http://localhost:${PORT}`;
@@ -18,6 +17,18 @@ const sampleCard = {
   completeSet: true,
   single: false
 };
+
+// const sampleCard2 = {
+//   brand: 'Upper Deck',
+//   completeSet: true,
+//   single: false
+// };
+//
+// const sampleCard3 = {
+//   brand: 'Donruss',
+//   completeSet: true,
+//   single: false
+// };
 
 describe('Card Routes', function() {
   describe('POST: /api/card', function() {
@@ -212,4 +223,40 @@ describe('Card Routes', function() {
       });
     });
   });
+  // describe('GET: api/card', function() {
+  //   describe('without an ID provided', function() {
+  //     before( done => {
+  //       new Card(sampleCard).save()
+  //       .then( card => {
+  //         this.testCard = card;
+  //       })
+  //       .then( new Card(sampleCard2).save())
+  //       .then( card2 => {
+  //         this.testCard2 = card2;
+  //       })
+  //       .then( new Card(sampleCard3).save())
+  //       .then( card3 => {
+  //         this.testCard3 = card3;
+  //       })
+  //       .catch(done);
+  //     });
+  //
+  //     after( done => {
+  //       Card.remove({})
+  //       .then( () => done())
+  //       .catch(done);
+  //     });
+  //
+  //     it('should return an array of ids', done => {
+  //       request.get(`${url}/api/card`)
+  //       .end((err, res) => {
+  //         console.error(err);
+  //         console.log('res:', res);
+  //         if (err) return done(err);
+  //         expect(res.status).to.equal(200);
+  //         done();
+  //       });
+  //     });
+  //   });
+  // });
 });
