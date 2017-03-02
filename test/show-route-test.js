@@ -38,7 +38,24 @@ describe('Show Routes', function(){
         });
       });
     });
-    //without a valid body;
+    describe('without a valid body', function(){
+      after( done => {
+        if(this.tempShow){
+          Show.remove({})
+          .then(() => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+      it('should return a 400 error', done => {
+        request.post(`${url}/api/show`)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
   describe('GET /api/show/:id', function(){
     describe('with a valid id', function(){
@@ -71,6 +88,34 @@ describe('Show Routes', function(){
         });
       });
     });
+    describe('with an invalid id', function(){
+      before( done => {
+        exampleShow.timestamp = new Date();
+        new Show(exampleShow).save()
+        .then(show => {
+          this.tempShow = show;
+          done();
+        })
+        .catch(done);
+      });
+      after( done => {
+        delete exampleShow.timestamp;
+        if(this.tempShow){
+          Show.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+      it('should return a 404', done => {
+        request.get(`${url}/api/show/badid`)
+        .end((err,res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
   });
   describe('PUT /api/show/:id', function(){
     describe('with a valid id', function(){
@@ -97,6 +142,59 @@ describe('Show Routes', function(){
         .end((err, res) => {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal('new show name');
+          done();
+        });
+      });
+    });
+    describe('with an invalid id', function(){
+      before( done => {
+        exampleShow.timestamp = new Date();
+        new Show(exampleShow).save()
+        .then(show => {
+          this.tempShow = show;
+          done();
+        })
+        .catch(done);
+      });
+      after( done => {
+        delete exampleShow.timestamp;
+        if(this.tempShow){
+          Show.remove({})
+          .then( () => done())
+          .catch(done);
+        }
+      });
+      it('should return a new show', done => {
+        request.put(`${url}/api/show/badid`)
+        .send({name:'new show name'})
+        .end((err, res) => {
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('with an invalid body', function(){
+      before( done => {
+        exampleShow.timestamp = new Date();
+        new Show(exampleShow).save()
+        .then(show => {
+          this.tempShow = show;
+          done();
+        })
+        .catch(done);
+      });
+      after( done => {
+        delete exampleShow.timestamp;
+        if(this.tempShow){
+          Show.remove({})
+          .then( () => done())
+          .catch(done);
+        }
+      });
+      it('should return a new show', done => {
+        request.put(`${url}/api/show/${this.tempShow._id}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(400);
           done();
         });
       });
