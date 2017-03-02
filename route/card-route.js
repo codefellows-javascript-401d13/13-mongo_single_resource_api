@@ -34,18 +34,35 @@ cardRouter.get('/api/card/:id', function(req, res, next) {
 });
 
 cardRouter.put('/api/card/:_id', jsonParser, function(req, res, next) {
-  debug('POST: api/card/:brand.:completeSet.:single');
+  debug('POST: api/card/:_id');
 
-  if (Object.keys(req.body).length === 0) {
+  if (Object.keys(req.body).length === 0 || (!req.params._id)) {
     return next(createError(400));
   }
-  
+
   Card.findByIdAndUpdate(req.params._id, req.body, { new: true })
   .then( update => {
     if (!update) {
       return next(createError(404));
     }
     res.json(update);
+  })
+  .catch(next);
+});
+
+cardRouter.delete('/api/card/:_id', function(req, res, next) {
+  debug('DELETE: api/card/:_id');
+
+  if (!req.params._id) {
+    return next(createError(400));
+  }
+
+  Card.findByIdAndRemove(req.params._id)
+  .then( discarded => {
+    if (!discarded) {
+      return next(createError(404));
+    }
+    res.json(discarded);
   })
   .catch(next);
 });

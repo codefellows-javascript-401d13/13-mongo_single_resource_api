@@ -177,4 +177,39 @@ describe('Card Routes', function() {
       });
     });
   });
+
+  describe('DELETE: api/card', function() {
+    describe('with a valid id', function() {
+      before( done => {
+        new Card(sampleCard).save()
+        .then( card => {
+          this.testCard = card;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        if (this.testCard) {
+          Card.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('should remove an item', done => {
+        request.delete(`${url}/api/card/${this.testCard._id}`)
+        .end((err, res) => {
+          if (err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body.brand).to.equal(this.testCard.brand);
+          expect(res.body.completeSet).to.be.true;
+          expect(res.body.single).to.not.be.true;
+          done();
+        });
+      });
+    });
+  });
 });
