@@ -57,15 +57,15 @@ describe('Mountains Routes', function() {
         });
       });
     });
-    // describe('with an invalid id', () => {
-    //   it('should return a 400 bad request', done => {
-    //     request.get(`${url}/api/mountains/${wrongID}`)
-    //     .end((err, res) => {
-    //       expect(err.status).to.equal(400);
-    //       done();
-    //     });
-    //   });
-    // });
+    describe('with an invalid id', () => {
+      it('should return a 404 not found', done => {
+        request.get(`${url}/api/mountains/${wrongID}`)
+        .end(err => {
+          expect(err.status).to.equal(404);
+          done();
+        });
+      });
+    });
   });
   describe('PUT: /api/mountains/:id', function() {
     beforeEach(done => {
@@ -100,28 +100,29 @@ describe('Mountains Routes', function() {
         });
       });
     });
-    // describe('with an invalid id', () => {
-    //   it('should return a 404 not found', done => {
-    //     request.put(`${url}/api/mountains/${wrongID}`)
-    //     .send(newInfo)
-    //     .end((err, res) => {
-    //       expect(err.status).to.equal(404);
-    //       done();
-    //     });
-    //   });
-    // });
-  //   describe('with invalid response body', () => {
-  //     it('should return a 400 bad request', done => {
-  //       request.put(`${url}/api/mountains/${this.tempMountains._id}`)
-  //       .end((err, res) => {
-  //         expect(err.status).to.equal(400);
-  //         done();
-  //       });
-  //     });
-  //   });
+    describe('with an invalid id', () => {
+      it('should return a 404 not found', done => {
+        request.put(`${url}/api/mountains/${wrongID}`)
+        .send(newInfo)
+        .end(err => {
+          expect(err.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('with invalid response body', () => {
+      it('should return a 400 bad request', done => {
+        request.put(`${url}/api/mountains/${this.tempMountains._id}`)
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+    });
   });
   describe('POST: /api/mountains', function() {
     afterEach(done => {
+      delete testMountain.timestamp;
       if(this.tempMountains) {
         Mountains.remove({})
         .then( () => done())
@@ -130,15 +131,15 @@ describe('Mountains Routes', function() {
       }
       done();
     });
-    // describe('with no request body', function() {
-    //   it('should return a 400 bad request', function(done) {
-    //     request.post(`${url}/api/mountains`)
-    //     .end((err, res) => {
-    //       expect(err.status).to.equal(400);
-    //       done();
-    //     });
-    //   });
-    // });
+    describe('with no request body', function() {
+      it('should return a 400 bad request', function(done) {
+        request.post(`${url}/api/mountains`)
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+    });
     describe('with a valid body', function() {
       it('should return a mountain', done => {
         request.post(`${url}/api/mountains`)
@@ -177,10 +178,10 @@ describe('Mountains Routes', function() {
       });
     });
     describe('with invalid id', function() {
-      it('should return an error', done =>  {
+      it('should return a 404 not found', done =>  {
         request.delete(`${url}/api/mountains/${wrongID}`)
-        .end((err, res) => {
-          expect(err).to.be.an('error');
+        .end(err => {
+          expect(err.status).to.be.equal(404);
           done();
         });
       });
