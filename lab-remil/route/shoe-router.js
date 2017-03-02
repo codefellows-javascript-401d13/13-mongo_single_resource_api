@@ -50,3 +50,15 @@ shoeRouter.put('/api/shoe/:id', jsonParser, function(req, res, next) {
     next(err);
   });
 });
+
+shoeRouter.delete('/api/shoe/:id', function(req, res, next) {
+  debug('DELETE: /api/shoe/:id');
+
+  if (!req.params.id) return next(createError(400, 'expected id'));
+
+  Shoe.findByIdAndRemove(req.params.id)
+  .then( shoe => {
+    res.sendStatus(204);
+  })
+  .catch(next);
+});

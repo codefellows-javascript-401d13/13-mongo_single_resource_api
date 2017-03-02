@@ -217,7 +217,40 @@ describe('Shoe Routes', function() {
         });
       });
     });
+  });
 
+  describe('DELETE: /api/shoe/:id', function() {
+    describe('with a valid id', function() {
+      before( done => {
+        shoeExample.timestamp = new Date();
+        new Shoe(shoeExample).save()
+        .then( shoe => {
+          this.tempShoe = shoe;
+          done();
+        })
+        .catch(done);
+      });
 
+      after( done => {
+        if (this.tempShoe) {
+          Shoe.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('should return the deleted shoe and a 204 status', done => {
+        request.delete(`${url}/api/shoe/${this.tempShoe._id}`)
+        .end((err, res) => {
+          if (err) done(err);
+          console.log('delete res body: ', res.body);
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+
+    });
   });
 });
