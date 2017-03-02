@@ -44,7 +44,7 @@ shoeRouter.put('/api/shoe/:id', jsonParser, function(req, res, next) {
   debug('PUT: /api/shoe/:id');
 
   if (!req.params.id) return next(createError(400, 'expected id'));
-  if (Object.keys(req.body).length === 0) return next(createError(400, 'expected id'));
+  if (Object.keys(req.body).length === 0) return next(createError(400, 'expected request body'));
 
   console.log('req body:', req.body);
 
