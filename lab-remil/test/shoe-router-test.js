@@ -150,5 +150,74 @@ describe('Shoe Routes', function() {
         });
       });
     });
+
+    describe('with no id', function() {
+      before( done => {
+        shoeExample.timestamp = new Date();
+        new Shoe(shoeExample).save()
+        .then( shoe => {
+          this.tempShoe = shoe;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        if (this.tempShoe) {
+          Shoe.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('should return a 404 status', done => {
+        let newShoe = {
+          model: 'new model',
+          brand: 'new brand',
+        };
+        request.put(`${url}/api/shoe/`)
+        .send(newShoe)
+        .end((err, res) => {
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(404);
+          done();
+        });
+      });
+    });
+
+    describe('with a bad body', function() {
+      before( done => {
+        shoeExample.timestamp = new Date();
+        new Shoe(shoeExample).save()
+        .then( shoe => {
+          this.tempShoe = shoe;
+          done();
+        })
+        .catch(done);
+      });
+
+      after( done => {
+        if (this.tempShoe) {
+          Shoe.remove({})
+          .then( () => done())
+          .catch(done);
+          return;
+        }
+        done();
+      });
+
+      it('should return a 400 status', done => {
+        request.put(`${url}/api/shoe/${this.tempShoe._id}`)
+        .end((err, res) => {
+          expect(err).to.be.an('error');
+          expect(res.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
+
   });
 });
