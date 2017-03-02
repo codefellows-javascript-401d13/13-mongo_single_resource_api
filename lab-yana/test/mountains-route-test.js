@@ -67,6 +67,35 @@ describe('Mountains Routes', function() {
       });
     });
   });
+  describe('GET: /api/mountains', function() {
+    describe('list of documents in mountains collection', function() {
+      before(done => {
+        testMountain.timestamp = new Date();
+        newInfo.timestamp = new Date();
+        new Mountains(testMountain).save();
+        new Mountains(newInfo).save();
+        done();
+      });
+      after(done => {
+        delete testMountain.timestamp;
+        delete newInfo.timestamp;
+        Mountains.remove({})
+        .then( () => done())
+        .catch(done);
+      });
+      it('should return a list of names', done => {
+        var testList = ['test mountain name','new name'];
+        request.get(`${url}/api/mountains`)
+        .end((err, res) => {
+          if (err) done(err);
+          console.log('res.body in tst', res.body);
+          expect(res.body[0]).to.equal(testList[0]); // I initially had expect(res.body).to.equal(testList), but it threw an assertion error even though the expected and actual were identical...
+          expect(res.body[1]).to.equal(testList[1]);
+          done();
+        });
+      });
+    });
+  });
   describe('PUT: /api/mountains/:id', function() {
     beforeEach(done => {
       testMountain.timestamp = new Date();

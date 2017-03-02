@@ -27,6 +27,18 @@ mountainsRouter.get(`${url}/:id`, function(req, res, next) {
   .catch(next);
 });
 
+mountainsRouter.get(url, function (req, res, next) {
+  debug('GET /api/mountains');
+  Mountains.find({})
+  .then(list => {
+    let nameList = list.map(document => document.name);
+    res.json(nameList);
+    console.log('Mountain Names:');
+    nameList.forEach(name => console.log(name));
+  })
+  .catch(next);
+});
+
 mountainsRouter.delete(`${url}/:id`, function(req, res, next) {
   debug('DELETE /api/mountains/:id');
   Mountains.findByIdAndRemove(req.params.id)
