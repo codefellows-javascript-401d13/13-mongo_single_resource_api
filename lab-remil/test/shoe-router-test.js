@@ -245,7 +245,6 @@ describe('Shoe Routes', function() {
         request.delete(`${url}/api/shoe/${this.tempShoe._id}`)
         .end((err, res) => {
           if (err) done(err);
-          console.log('delete res body: ', res.body);
           expect(res.status).to.equal(204);
           done();
         });

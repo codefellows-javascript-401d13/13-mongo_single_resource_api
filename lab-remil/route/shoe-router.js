@@ -7,6 +7,26 @@ const jsonParser = require('body-parser').json();
 const Shoe = require('../model/shoe.js');
 const shoeRouter = module.exports = new require('express').Router();
 
+shoeRouter.get('/api/shoe/:id', function(req, res, next) {
+  debug('GET: /api/shoe/:id');
+
+  Shoe.findById(req.params.id)
+  .then( shoe => res.json(shoe))
+  .catch( err => {
+    if (err.kind === 'ObjectId' && err.name === 'CastError') err = createError(404, err.message);
+
+    next(err);
+  });
+});
+
+shoeRouter.get('/api/shoe', function(req, res, next) {
+  debug('GET: /api/shoe');
+
+  Shoe.find({})
+  .then( shoes => res.json(shoes))
+  .catch(next);
+});
+
 shoeRouter.post('/api/shoe', jsonParser, function(req, res, next) {
   debug('POST: /api/shoe');
 
@@ -19,19 +39,6 @@ shoeRouter.post('/api/shoe', jsonParser, function(req, res, next) {
   .catch(next);
 });
 
-shoeRouter.get('/api/shoe/:id', function(req, res, next) {
-  debug('GET: /api/shoe');
-
-  if (!req.params.id) return next(createError(400, 'expected id'));
-
-  Shoe.findById(req.params.id)
-  .then( shoe => res.json(shoe))
-  .catch( err => {
-    if (err.kind === 'ObjectId' && err.name === 'CastError') err = createError(404, err.message);
-
-    next(err);
-  });
-});
 
 shoeRouter.put('/api/shoe/:id', jsonParser, function(req, res, next) {
   debug('PUT: /api/shoe/:id');
@@ -57,7 +64,7 @@ shoeRouter.delete('/api/shoe/:id', function(req, res, next) {
   if (!req.params.id) return next(createError(400, 'expected id'));
 
   Shoe.findByIdAndRemove(req.params.id)
-  .then( shoe => {
+  .then( () => {
     res.sendStatus(204);
   })
   .catch(next);
