@@ -26,5 +26,21 @@ shoeRouter.get('/api/shoe/:id', function(req, res, next) {
 
   Shoe.findById(req.params.id)
   .then( shoe => res.json(shoe))
-  .catch(next);  
+  .catch( err => {
+    if (err.kind === 'ObjectId' && err.name === 'CastError') err = createError(404, err.message);
+
+    next(err);
+  });
+});
+
+shoeRouter.put('/api/shoe/:id', jsonParser, function(req, res, next) {
+  debug('PUT: /api/shoe/:id');
+
+  console.log('req body: ', req.body);
+
+  req.body.timestamp = new Date();
+
+  Shoe.findByIdAndUpdate(req.params.id, req.body, { new: true })
+  .then( shoe => res.json(shoe))
+  .catch(next);
 });
