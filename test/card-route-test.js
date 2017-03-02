@@ -145,6 +145,7 @@ describe('Card Routes', function() {
         });
       });
     });
+
     describe('with a body but undefined id', function() {
       it('should return a 404 error', function(done) {
         let fakeCard = {
@@ -159,6 +160,18 @@ describe('Card Routes', function() {
           expect(err.status).to.equal(404);
           expect(res.status).to.equal(err.status);
           expect(err.message).to.equal('Not Found');
+          done();
+        });
+      });
+    });
+
+    describe('without a req body', function() {
+      it('should return a 400 error', function(done) {
+        let testId = '000000000000000000000000';
+        request.put(`${url}/api/card/${testId}`)
+        .end((err, res) => {
+          expect(err.status).to.equal(400);
+          expect(err.status).to.equal(res.status);
           done();
         });
       });

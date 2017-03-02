@@ -12,10 +12,7 @@ cardRouter.post('/api/card', jsonParser, function(req, res, next) {
   debug('POST: api/card');
 
   if (Object.keys(req.body).length === 0) {
-    debug('POST without body');
-
-    let err = createError(400);
-    return next(err);
+    return next(createError(400));
   }
 
   new Card(req.body).save()
@@ -39,6 +36,10 @@ cardRouter.get('/api/card/:id', function(req, res, next) {
 cardRouter.put('/api/card/:_id', jsonParser, function(req, res, next) {
   debug('POST: api/card/:brand.:completeSet.:single');
 
+  if (Object.keys(req.body).length === 0) {
+    return next(createError(400));
+  }
+  
   Card.findByIdAndUpdate(req.params._id, req.body, { new: true })
   .then( update => {
     if (!update) {
