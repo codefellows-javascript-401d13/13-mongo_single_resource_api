@@ -10,7 +10,6 @@ const createError = require('http-errors');
 showRouter.post('/api/show', jsonParser, function(req, res, next){
   debug('POST : showRouter');
   req.body.timestamp = new Date();
-  console.log('res body name in post', req.body.name);
   if(!req.body.name) return next(createError(400, 'bad request'));
   new Show(req.body).save()
   .then(data => res.json(data))
@@ -20,6 +19,7 @@ showRouter.post('/api/show', jsonParser, function(req, res, next){
 showRouter.get('/api/show/:id', function(req, res, next){
   debug('GET: showRouter');
   Show.findById(req.params.id)
+  .populate('characters')
   .then(show => res.json(show))
   .catch(err => {
     if(err.name === 'CastError') {
@@ -34,8 +34,7 @@ showRouter.put('/api/show/:id', jsonParser, function(req, res, next){
   if(!req.body.name) return next(createError(400, 'bad request'));
   Show.findByIdAndUpdate(req.params.id, req.body, {new:true})
   .then(show => res.json(show))
-  .catch(err => {
-    console.error(err);
+  .catch(() => {
     next();
   });
 });

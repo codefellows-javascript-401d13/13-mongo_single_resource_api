@@ -11,8 +11,10 @@ const url = `http://localhost:${PORT}`;
 require('../server.js');
 
 const exampleShow = {
-  name: 'test show name'
+  name: 'test show name',
+  timestamp: new Date()
 };
+
 
 describe('Show Routes', function(){
   describe('Post /api/show', function(){
