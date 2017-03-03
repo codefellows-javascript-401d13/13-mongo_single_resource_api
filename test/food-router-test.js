@@ -12,7 +12,14 @@ require('../server.js');
 const url = `http://localhost:${PORT}`;
 const exampleFood = {
   name: 'test food name',
-  meal: 'Breakfast'
+  meal: 'Breakfast',
+  timestamp: new Date()
+};
+
+const exampleSalad = {
+  name: 'test salad name',
+  dressing: 'ceaser',
+  timestamp: new Date()
 };
 
 describe('Food Routes', function() {
@@ -59,6 +66,10 @@ describe('Food Routes', function() {
         new Food(exampleFood).save()
         .then( food => {
           this.tempFood = food;
+          return Food.findByIdAndAddSalad(food._id, exampleSalad);
+        })
+        .then( salad => {
+          this.tempSalad = salad;
           done();
         })
         .catch(done);
@@ -82,6 +93,8 @@ describe('Food Routes', function() {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal('test food name');
           expect(res.body.meal).to.equal('Breakfast');
+          expect(res.body.salads.length).to.equal(1);
+          expect(res.body.salads[0].name).to.equal(exampleSalad.name);
           done();
         });
       });
@@ -99,7 +112,6 @@ describe('Food Routes', function() {
   describe('PUT: /api/food/:id', function() {
     describe('with a valid body', function() {
       before( done => {
-        exampleFood.timestamp = new Date();
         new Food(exampleFood).save()
          .then( food => {
            this.tempFood = food;
@@ -109,9 +121,9 @@ describe('Food Routes', function() {
       });
       after( done => {
         if(this.tempFood) {
-          Food.findByIdAndRemove(this.tempFood._id)
-           .then( () => done())
-           .catch(done);
+          Food.remove({})
+          .then( () => done())
+          .catch(done);
           return;
         }
         done();
@@ -121,8 +133,10 @@ describe('Food Routes', function() {
           .send({name: 'new name', meal:'lunch'})
           .end( (err, res) => {
             if(err) return done(err);
+            let timestamp = new Date();
             expect(res.status).to.equal(200);
-            this.tempMovie = res.body;
+            expect(res.body.name).to.equal('new name');
+            expect(timestamp.toString()).to.equal(exampleFood.timestamp.toString());
             done();
           });
       });
