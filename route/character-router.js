@@ -43,7 +43,9 @@ characterRouter.put('/api/character/:id', jsonParser, function(req, res, next){
   });
 });
 
-// characterRouter.delete('/api/character/:characterId', function(req, res, next){
-//   debug('Delete: Character Router');
-//   Show.findByIdAndRemoveCharacter()
-// });
+characterRouter.delete('/api/character/:characterId', function(req, res, next){
+  debug('Delete: Character Router');
+  Show.findByIdAndRemoveCharacter(req.params.id)
+  .then(() => res.status(204).send())
+  .catch(err => next(createError(404, err.message)));
+});

@@ -36,12 +36,12 @@ Show.findByIdAndAddCharacter = function(id, character){
   });
 };
 
-// Show.findByIdAndRemoveCharacter = function(id){
-//   debug('findByIdAndRemoveCharacter');
-//
-//   return Character.findByIdAndRemove(id)
-//   .catch(err => Promise.reject(404, err.message))
-//   .then(data => {
-//     console.log(data);
-//   });
-// };
+Show.findByIdAndRemoveCharacter = function(id){
+  debug('findByIdAndRemoveCharacter');
+
+  return Character.findByIdAndRemove(id)
+  .catch(err => Promise.reject(404, err.message))
+  .then( () => {
+    return; 
+  });
+};

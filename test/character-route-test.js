@@ -262,4 +262,35 @@ describe('Character Routes', function() {
       });
     });
   });
+  describe('Delete /api/character/:id', function(){
+    describe('with a valid id', function(){
+      before( done => {
+        new Show(exampleShow).save()
+        .then( show => {
+          this.tempShow = show;
+          return Show.findByIdAndAddCharacter(show._id, exampleCharacter);
+        })
+        .then( character => {
+          this.tempCharacter = character;
+          done();
+        })
+        .catch(done);
+      });
+      after(done => {
+        Promise.all([
+          Show.remove({}),
+          Character.remove({})
+        ])
+        .then(() => done())
+        .catch(done);
+      });
+      it('should return a 204', done => {
+        request.delete(`${url}/api/character/${this.tempCharacter._id}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+    });
+  });
 });
