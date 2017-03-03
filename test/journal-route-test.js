@@ -12,8 +12,8 @@ require('../server.js');
 const url = `http://localhost:${PORT}`;
 const exampleJournal = {
   name: 'test journal name',
-  subject: 'test journal subject'
-
+  subject: 'test journal subject',
+  timestamp: new Date()
 };
 
 
@@ -91,7 +91,7 @@ describe('Journal Routes', function() {
     });
 
     describe('with an invalid id', function(){
-      it('should return a 404 error', function() {
+      it('should return a 404 error', function(done) {
         request.get(`${url}/api/journal/87687687`)
         .end((err, res) => {
           expect(res.status).to.equal(404);
