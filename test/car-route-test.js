@@ -40,19 +40,17 @@ describe('Car Routes', function() {
         });
       });
     });
-
-
-    it('should return 400 bad request', done => {
-      request.post(`${url}/api/car`)
-      .end((err, res) => {
-        expect(err).to.be.an('error');
-        expect(res.status).to.equal(400);
-        this.tempCar = res.body;
-        done();
+    describe('Invalid body', function(){
+      it('should return 400 bad request', done => {
+        request.post(`${url}/api/car`)
+        .send({})
+       .end((err, res) => {
+         expect(res.status).to.equal(400);
+         done();
+       });
       });
     });
   });
-
 
   describe('GET: api/car/:id', function(){
     describe('valid id and body', function(){
@@ -90,7 +88,7 @@ describe('Car Routes', function() {
 
     describe('with an invalid id', function(){
       it('should respond with a 404 status code', done => {
-        request.get(`${url}/api/car/678b`)
+        request.get(`${url}/api/car/badID`)
         .end(err  => {
           expect(err).to.be.an('error');
           expect(err.status).to.equal(404);
@@ -141,25 +139,52 @@ describe('Car Routes', function() {
     });
 
 
-    it('should respond with a 404 status code', done => {
-      let updateCar = { make: 'new whip', model: 'new style'};
-      request.put(`${url}/api/car/556`)
+    // describe('with no id', function(){
+    //   before( done => {
+    //     exampleCar.timestamp = new Date();
+    //     new Car(exampleCar).save()
+    //     .then( car => {
+    //       this.tempCar = car;
+    //       done();
+    //     })
+    //     .catch(done);
+    //   });
+    //
+    //   after( done => {
+    //     if (this.tempCar) {
+    //       Car.remove({})
+    //       .then( () => done())
+    //       .catch(done);
+    //       return;
+    //     }
+    //     done();
+    //   });
+
+
+    describe('with an invalid id', function(){
+      it('should return 404 error', done => {
+        request.put(`${url}/api/car/986`)
+          .end(res => {
+            expect(res.status).to.equal(404);
+            done();
+          });
+      });
+    });
+
+    it('should return 400 error', done => {
+      let updateCar = 'new whnew style';
+      request.put(`${url}/api/car/id`)
+      .set('Content-Type', 'application/json')
       .send(updateCar)
-      .end(err => {
-        expect(err.status).to.be.equal(404);
+      .end((err, res) => {
+        // expect(err).to.be.an('error');
+        expect(res.status).to.equal(400);
         done();
       });
     });
-
-
-    describe('with an invalid body', function(){
-      it('should return a 400', done => {
-        request.put(`${url}/api/car/6`)
-        .end(err => {
-          expect(err.status).to.be.equal(400);
-          done();
-        });
-      });
-    });
   });
+
+
+
 });
+// });
